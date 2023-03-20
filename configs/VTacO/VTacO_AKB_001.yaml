@@ -1,0 +1,126 @@
+method: vtaco
+data:
+  input_type: pointcloud
+  classes: null
+  path: ./data/VTacO_AKB_class/001
+  pointcloud_n: 3000
+  pointcloud_noise: 0.005
+  points_subsample: 100000
+  num_sample: 2048
+  points_file: points.npz
+  points_iou_file: points.npz
+  voxels_file: null
+  pointcloud_file: pointcloud.npz
+  points_unpackbits: False
+  
+model:
+  train_tactile: False
+  with_img: True
+  with_contact: False
+
+  encoder: pointnet_local_pool
+  encoder_kwargs:
+    hidden_dim: 32
+    plane_type: 'grid'
+    grid_resolution: 64
+    unet3d: True
+    unet3d_kwargs:
+      num_levels: 4
+      f_maps: 32
+      in_channels: 32
+      out_channels: 32
+  
+  encoder_hand: pointnet_local_pool
+  encoder_hand_kwargs:
+    hidden_dim: 32
+    plane_type: ['xz', 'xy', 'yz']
+    plane_resolution: 32
+    unet: True
+    unet_kwargs:
+      depth: 4
+      merge_mode: concat
+      start_filts: 32
+    
+    out_mano: True
+    out_dim: 51
+    manolayer_kwargs: &manolayer_k
+      center_idx: 9
+      flat_hand_mean: False
+      ncomps: 45
+      side: right
+      mano_root: src/encoder/assets/mano
+      use_pca: False
+      root_rot_mode: axisang
+      joint_rot_mode: axisang
+      robust_rot: False
+      return_transf: False
+      return_full_pose: True
+
+  encoder_img: Resnet18
+  encoder_img_kwargs:
+    num_classes: 32
+  
+  encoder_t2d: True
+  encoder_t2d_kwargs:
+    pretrained: True
+    model_file: ../../tactile/test/model_best.pt
+
+    encoder_img: UNet
+    encoder_img_kwargs:
+      num_classes: 1
+      in_channel: 3
+      start_filts: 32
+      depth: 3
+
+    encoder_hand: pointnet_local_pool
+    encoder_hand_kwargs:
+      c_dim: 512
+      hidden_dim: 32
+      plane_type: ['xz', 'xy', 'yz']
+      plane_resolution: 64
+      unet: True
+      unet_kwargs:
+        depth: 4
+        merge_mode: concat
+        start_flits: 32
+      
+      out_mano: True
+      out_dim: 30
+      manolayer_kwargs: *manolayer_k
+    
+
+  decoder: simple_local
+  decoder_kwargs:
+    sample_mode: bilinear # bilinear / nearest
+    hidden_size: 32
+  c_dim: 32
+
+training:
+  out_dir: out/VTacO/AKB_001
+  opt: Adam
+  lr: 0.0001
+  gpu: 2
+  batch_size: 4
+  model_selection_metric: iou
+  model_selection_mode: maximize
+  print_every: 100
+  visualize_every: 1
+  validate_every: 1
+  checkpoint_every: 2000
+  backup_every: 10000
+  n_workers: 8
+  n_workers_val: 4
+
+test:
+  threshold: 0.5
+  eval_mesh: true
+  eval_pointcloud: False
+  # model_file: ../AKB_all/model_best.pt
+  model_file: model.pt
+
+generation:
+  vis_all: True
+  refine: false
+  n_x: 128
+  n_z: 1
+  alpha: 0.2
