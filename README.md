@@ -31,7 +31,7 @@ You can do this via
 python setup.py build_ext --inplace
 ```
 
-## Dataset
+## Dataset and VT-Sim
 <!-- For downloading the training and testing dataset for VTacO and VTacOH, you can simply run the following command to download our preprocessed dataset:
 
 ```
@@ -57,7 +57,7 @@ VTacO
     │   │   │── mesh_obj
     │   │   │── depth_origin.txt
 ``` -->
-We will soon release the dataset!
+We will soon release the dataset and VT-Sim!
 
 ## Training
 To train the Depth Estimator $U_I(\cdot)$ and the sensor pose estimator, we provide a config file `configs/tactile/tactile_test.yaml`, you can run the following command to train from scratch:
