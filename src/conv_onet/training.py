@@ -253,7 +253,7 @@ class Trainer(BaseTrainer):
 
                     
                     width = h
-                    height = 300
+                    height = h
                     near_plane = 0.017
                     far_plane = 0.022
                     fov = 60
@@ -665,7 +665,7 @@ class Trainer(BaseTrainer):
             faces_l.append(f)
 
         width = h
-        height = 300
+        height = h
         near_plane = 0.017
         far_plane = 0.022
         fov = 60
@@ -792,7 +792,7 @@ class Trainer(BaseTrainer):
 
         
         width = h
-        height = 300
+        height = h
         near_plane = 0.017
         far_plane = 0.022
         fov = 60

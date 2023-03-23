@@ -228,7 +228,7 @@ class Inferencer(BaseInference):
             cam_rot_d = cam_rot.cpu().detach().numpy().reshape(1, 5, 3)
             
             width = h
-            height = 300
+            height = h
             near_plane = 0.017
             far_plane = 0.022
             fov = 60
