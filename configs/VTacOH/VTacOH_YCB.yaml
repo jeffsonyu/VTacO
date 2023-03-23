@@ -1,4 +1,4 @@
-method: conv_onet
+method: vtaco
 data:
   input_type: pointcloud
   classes: null
