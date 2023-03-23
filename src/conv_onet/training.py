@@ -252,7 +252,7 @@ class Trainer(BaseTrainer):
 
 
                     
-                    width = h
+                    width = w
                     height = h
                     near_plane = 0.017
                     far_plane = 0.022
@@ -664,7 +664,7 @@ class Trainer(BaseTrainer):
             vertices_l.append(v)
             faces_l.append(f)
 
-        width = h
+        width = w
         height = h
         near_plane = 0.017
         far_plane = 0.022
@@ -791,7 +791,7 @@ class Trainer(BaseTrainer):
             faces_l.append(f)
 
         
-        width = h
+        width = w
         height = h
         near_plane = 0.017
         far_plane = 0.022
