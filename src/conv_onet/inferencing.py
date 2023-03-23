@@ -285,7 +285,7 @@ class Inferencer(BaseInference):
                         depth = depth*0.005 + 0.017
                         depth = depths.squeeze().cpu().numpy()[t_idx].reshape(h, w)
                                 
-                        depth_diff = depth.reshape(60000) - depth_origin
+                        depth_diff = depth.reshape(w * h) - depth_origin
                         idx_points = np.where(abs(depth_diff)>0.0001)
                         if idx_points[0].shape == 0: continue
                         
