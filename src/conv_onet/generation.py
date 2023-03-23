@@ -149,6 +149,7 @@ class Generator3D(object):
         cam_rot_d = cam_rot.cpu().detach().numpy().reshape(1, 5, 3)
         
         width = w
+        height = h
         
         near_plane = 0.017
         far_plane = 0.022
