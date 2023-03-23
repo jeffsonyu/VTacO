@@ -16,7 +16,8 @@ import trimesh
 
 
 depth_origin = np.loadtxt("./data/VTacO_mesh/depth_origin.txt")
-
+w = 240
+h = 320
 
 class Inferencer(BaseInference):
     ''' Trainer object for the Occupancy Network.
@@ -226,7 +227,7 @@ class Inferencer(BaseInference):
             cam_pos_d = cam_pos.cpu().detach().numpy().reshape(1, 5, 3)
             cam_rot_d = cam_rot.cpu().detach().numpy().reshape(1, 5, 3)
             
-            width = 200
+            width = h
             height = 300
             near_plane = 0.017
             far_plane = 0.022
@@ -280,9 +281,9 @@ class Inferencer(BaseInference):
                 for t_idx in range(5):
                     # if touch successful, cat the local feature to the query points
                     if touch_success[0, t_idx]:
-                        depth = pred_d_detach[0, t_idx].reshape(300, 200)
+                        depth = pred_d_detach[0, t_idx].reshape(h, w)
                         depth = depth*0.005 + 0.017
-                        depth = depths.squeeze().cpu().numpy()[t_idx].reshape(300, 200)
+                        depth = depths.squeeze().cpu().numpy()[t_idx].reshape(h, w)
                                 
                         depth_diff = depth.reshape(60000) - depth_origin
                         idx_points = np.where(abs(depth_diff)>0.0001)

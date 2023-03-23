@@ -15,6 +15,8 @@ import time
 import trimesh
 
 depth_origin = np.loadtxt("./data/VTacO_mesh/depth_origin.txt")
+w = 240
+h = 320
 
 class Trainer(BaseTrainer):
     ''' Trainer object for the Occupancy Network.
@@ -250,7 +252,7 @@ class Trainer(BaseTrainer):
 
 
                     
-                    width = 200
+                    width = h
                     height = 300
                     near_plane = 0.017
                     far_plane = 0.022
@@ -278,9 +280,9 @@ class Trainer(BaseTrainer):
                             pc_world_l = []
                             for t_idx in range(5):
                                 if touch_success[batch, t_idx]:
-                                    depth = pred_d_detach[batch, t_idx].reshape(300, 200)
+                                    depth = pred_d_detach[batch, t_idx].reshape(h, w)
                                     depth = depth*0.005 + 0.017
-                                    depth = depths.squeeze().cpu().numpy()[t_idx].reshape(300, 200)
+                                    depth = depths.squeeze().cpu().numpy()[t_idx].reshape(h, w)
                                     depth_diff = depth.reshape(60000) - depth_origin
                                     idx_points = np.where(abs(depth_diff)>0.0001)
                                     if idx_points[0].shape == 0: continue
@@ -322,9 +324,9 @@ class Trainer(BaseTrainer):
                             pc_world_l = []
                             for t_idx in range(5):
                                 if touch_success[batch, t_idx]:
-                                    depth = pred_d_detach[batch, t_idx].reshape(300, 200)
+                                    depth = pred_d_detach[batch, t_idx].reshape(h, w)
                                     depth = depth*0.005 + 0.017
-                                    depth = depths.squeeze().cpu().numpy()[t_idx].reshape(300, 200)
+                                    depth = depths.squeeze().cpu().numpy()[t_idx].reshape(h, w)
                                     
                                     depth_diff = depth.reshape(60000) - depth_origin
                                     idx_points = np.where(abs(depth_diff)>0.0001)
@@ -662,7 +664,7 @@ class Trainer(BaseTrainer):
             vertices_l.append(v)
             faces_l.append(f)
 
-        width = 200
+        width = h
         height = 300
         near_plane = 0.017
         far_plane = 0.022
@@ -686,9 +688,9 @@ class Trainer(BaseTrainer):
             pc_world_l = []
             for t_idx in range(5):
                 if touch_success[batch, t_idx]:
-                    depth = pred_d_detach[batch, t_idx].reshape(300, 200)
+                    depth = pred_d_detach[batch, t_idx].reshape(h, w)
                     depth = depth*0.005 + 0.017
-                    depth = depths[batch].cpu().numpy()[t_idx].reshape(300, 200)
+                    depth = depths[batch].cpu().numpy()[t_idx].reshape(h, w)
                     
                     depth_diff = depth.reshape(60000) - depth_origin
                     idx_points = np.where(abs(depth_diff)>0.0001)
@@ -789,7 +791,7 @@ class Trainer(BaseTrainer):
             faces_l.append(f)
 
         
-        width = 200
+        width = h
         height = 300
         near_plane = 0.017
         far_plane = 0.022
@@ -818,9 +820,9 @@ class Trainer(BaseTrainer):
             pc_world_l = []
             for t_idx in range(5):
                 if touch_success[batch, t_idx]:
-                    depth = pred_d_detach[batch, t_idx].reshape(300, 200)
+                    depth = pred_d_detach[batch, t_idx].reshape(h, w)
                     depth = depth*0.005 + 0.017
-                    depth = depths[batch].cpu().numpy()[t_idx].reshape(300, 200)
+                    depth = depths[batch].cpu().numpy()[t_idx].reshape(h, w)
                     depth_diff = depth.reshape(60000) - depth_origin
                     idx_points = np.where(abs(depth_diff)>0.0001)
                     if idx_points[0].shape[0] == 0: continue

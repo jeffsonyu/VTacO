@@ -21,6 +21,8 @@ import time
 
 counter = 0
 depth_origin = np.loadtxt("./data/VTacO_mesh/depth_origin.txt")
+w = 240
+h = 320
 
 class Generator3D(object):
     '''  Generator class for Occupancy Networks.
@@ -146,8 +148,8 @@ class Generator3D(object):
         cam_pos_d = cam_pos.cpu().detach().numpy().reshape(1, 5, 3)
         cam_rot_d = cam_rot.cpu().detach().numpy().reshape(1, 5, 3)
         
-        width = 200
-        height = 300
+        width = w
+        
         near_plane = 0.017
         far_plane = 0.022
         fov = 60
@@ -228,9 +230,9 @@ class Generator3D(object):
                     for t_idx in range(5):
                         # if touch successful, cat the local feature to the query points
                         if touch_success[0, t_idx]:
-                            depth = pred_d_detach[0, t_idx].reshape(300, 200)
+                            depth = pred_d_detach[0, t_idx].reshape(h, w)
                             depth = depth*0.005 + 0.017
-                            depth = depths.squeeze().cpu().numpy()[t_idx].reshape(300, 200)
+                            depth = depths.squeeze().cpu().numpy()[t_idx].reshape(h, w)
                                     
                             depth_diff = depth.reshape(60000) - depth_origin
                             idx_points = np.where(abs(depth_diff)>0.0001)
@@ -339,7 +341,7 @@ class Generator3D(object):
         #         pc_world_all = pc_cam_to_world(pc_depth_all, rot=cam_rot[t_idx]+[-np.pi/2, 0, np.pi/2], trans=cam_pos[t_idx])
         #         pc_world_l[t_idx] = norm_pc_1(pc_world_all, pc_ply.squeeze().detach().cpu().numpy())
                 
-        #         # depth = depths[t_idx].reshape(300, 200)
+        #         # depth = depths[t_idx].reshape(h, w)
         #         # pc_depth, pc_depth_all = cam_unity.depth_2_camera_pointcloud(depth)
         #         # pc_world_all = pc_cam_to_world(pc_depth_all, rot=cam_rot[t_idx]+[-np.pi/2, 0, np.pi/2], trans=cam_pos[t_idx])
         #         # pc_world_l[t_idx] = norm_pc_1(pc_world_all, pc_ply.squeeze().detach().cpu().numpy())
@@ -375,7 +377,7 @@ class Generator3D(object):
                     pc_world_all = pc_cam_to_world(pc_depth_all, rot=cam_rot[batch, t_idx, :]+[-np.pi/2, 0, np.pi/2], trans=cam_pos[batch, t_idx, :])
                     pc_world_l[batch, t_idx] = norm_pc_1(pc_world_all, pc_ply[batch].detach().cpu().numpy())
                     
-                    # depth = depths[t_idx].reshape(300, 200)
+                    # depth = depths[t_idx].reshape(h, w)
                     # pc_depth, pc_depth_all = cam_unity.depth_2_camera_pointcloud(depth)
                     # pc_world_all = pc_cam_to_world(pc_depth_all, rot=cam_rot[t_idx]+[-np.pi/2, 0, np.pi/2], trans=cam_pos[t_idx])
                     # pc_world_l[t_idx] = norm_pc_1(pc_world_all, pc_ply.squeeze().detach().cpu().numpy())
