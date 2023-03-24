@@ -1,8 +1,8 @@
-method: conv_onet
+method: vtaco
 data:
   input_type: pointcloud
   classes: null
-  path: /disk2/data/TactileFusion_final
+  path: ./data/VTacO_YCB
   pointcloud_n: 3000
   pointcloud_noise: 0.005
   points_subsample: 100000
