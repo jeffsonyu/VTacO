@@ -70,8 +70,8 @@ python train_depth.py configs/tactile/tactile_test.yaml
 
 With the pretrained model of $U_I(\cdot)$ and the sensor pose estimator, examples for training VTacO or VTacOH are as follows: 
 ```
-python train.py configs/VTacO/VTacO_AKB_001.yaml
-python train.py configs/VTacOH/VTacOH_AKB_001.yaml
+python train.py configs/VTacO/VTacO_YCB.yaml
+python train.py configs/VTacOH/VTacOH_YCB.yaml
 ```
 **Note**: you might need to change *path* in *data*, and *model_file* in *encoder_t2d_kwargs* of the config file, to your data path and pretrained model path.  
 
