@@ -31,7 +31,9 @@ You can do this via
 python setup.py build_ext --inplace
 ```
 
-## Dataset and VT-Sim
+## Dataset
+The dataset is available on https://huggingface.co/datasets/robotflow/vtaco/  
+You can follow the instructions download the dataset for training and testing dataset for VTacO and VTacOH.
 <!-- For downloading the training and testing dataset for VTacO and VTacOH, you can simply run the following command to download our preprocessed dataset:
 
 ```
@@ -50,14 +52,15 @@ VTacO
     │   │   │── ...
     │   │   │── 007
     ├── VTacO_YCB
-    │   │   │── YCB
+    │   │   │── 003
     │   │   │── metadata.yaml
     ├── VTacO_mesh
-    │   │   │── mesh
     │   │   │── mesh_obj
     │   │   │── depth_origin.txt
 ``` -->
-We will soon release the dataset and VT-Sim!
+
+## VT-Sim
+We will soon release the Simulation environment VT-Sim!
 
 ## Training
 To train the Depth Estimator $U_I(\cdot)$ and the sensor pose estimator, we provide a config file `configs/tactile/tactile_test.yaml`, you can run the following command to train from scratch:
