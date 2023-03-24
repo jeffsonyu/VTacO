@@ -32,7 +32,7 @@ python setup.py build_ext --inplace
 ```
 
 ## Dataset
-The dataset is available on https://huggingface.co/datasets/robotflow/vtaco/  
+We are uploading the dataset, which will be available on https://huggingface.co/datasets/robotflow/vtaco/  
 You can follow the instructions download the dataset for training and testing dataset for VTacO and VTacOH.
 <!-- For downloading the training and testing dataset for VTacO and VTacOH, you can simply run the following command to download our preprocessed dataset:
 
