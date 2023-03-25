@@ -254,7 +254,7 @@ class Trainer(BaseTrainer):
                     
                     width = w
                     height = h
-                    near_plane = 0.017
+                    near_plane = 0.019
                     far_plane = 0.022
                     fov = 60
                     cam_unity = RFUniverseCamera(width, height, near_plane, far_plane, fov)
@@ -281,7 +281,7 @@ class Trainer(BaseTrainer):
                             for t_idx in range(5):
                                 if touch_success[batch, t_idx]:
                                     depth = pred_d_detach[batch, t_idx].reshape(h, w)
-                                    depth = depth*0.005 + 0.017
+                                    depth = depth*0.005 + 0.019
                                     depth = depths.squeeze().cpu().numpy()[t_idx].reshape(h, w)
                                     depth_diff = depth.reshape(w * h) - depth_origin
                                     idx_points = np.where(abs(depth_diff)>0.0001)
@@ -325,7 +325,7 @@ class Trainer(BaseTrainer):
                             for t_idx in range(5):
                                 if touch_success[batch, t_idx]:
                                     depth = pred_d_detach[batch, t_idx].reshape(h, w)
-                                    depth = depth*0.005 + 0.017
+                                    depth = depth*0.005 + 0.019
                                     depth = depths.squeeze().cpu().numpy()[t_idx].reshape(h, w)
                                     
                                     depth_diff = depth.reshape(w * h) - depth_origin
@@ -666,7 +666,7 @@ class Trainer(BaseTrainer):
 
         width = w
         height = h
-        near_plane = 0.017
+        near_plane = 0.019
         far_plane = 0.022
         fov = 60
         cam_unity = RFUniverseCamera(width, height, near_plane, far_plane, fov)
@@ -689,7 +689,7 @@ class Trainer(BaseTrainer):
             for t_idx in range(5):
                 if touch_success[batch, t_idx]:
                     depth = pred_d_detach[batch, t_idx].reshape(h, w)
-                    depth = depth*0.005 + 0.017
+                    depth = depth*0.005 + 0.019
                     depth = depths[batch].cpu().numpy()[t_idx].reshape(h, w)
                     
                     depth_diff = depth.reshape(w * h) - depth_origin
@@ -793,7 +793,7 @@ class Trainer(BaseTrainer):
         
         width = w
         height = h
-        near_plane = 0.017
+        near_plane = 0.019
         far_plane = 0.022
         fov = 60
         cam_unity = RFUniverseCamera(width, height, near_plane, far_plane, fov)
@@ -821,7 +821,7 @@ class Trainer(BaseTrainer):
             for t_idx in range(5):
                 if touch_success[batch, t_idx]:
                     depth = pred_d_detach[batch, t_idx].reshape(h, w)
-                    depth = depth*0.005 + 0.017
+                    depth = depth*0.005 + 0.019
                     depth = depths[batch].cpu().numpy()[t_idx].reshape(h, w)
                     depth_diff = depth.reshape(w * h) - depth_origin
                     idx_points = np.where(abs(depth_diff)>0.0001)

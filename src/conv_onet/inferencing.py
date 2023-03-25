@@ -229,7 +229,7 @@ class Inferencer(BaseInference):
             
             width = w
             height = h
-            near_plane = 0.017
+            near_plane = 0.019
             far_plane = 0.022
             fov = 60
             cam_unity = RFUniverseCamera(width, height, near_plane, far_plane, fov)
@@ -282,7 +282,7 @@ class Inferencer(BaseInference):
                     # if touch successful, cat the local feature to the query points
                     if touch_success[0, t_idx]:
                         depth = pred_d_detach[0, t_idx].reshape(h, w)
-                        depth = depth*0.005 + 0.017
+                        depth = depth*0.005 + 0.019
                         depth = depths.squeeze().cpu().numpy()[t_idx].reshape(h, w)
                                 
                         depth_diff = depth.reshape(w * h) - depth_origin

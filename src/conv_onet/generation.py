@@ -149,9 +149,8 @@ class Generator3D(object):
         cam_rot_d = cam_rot.cpu().detach().numpy().reshape(1, 5, 3)
         
         width = w
-        height = h
         
-        near_plane = 0.017
+        near_plane = 0.019
         far_plane = 0.022
         fov = 60
         cam_unity = RFUniverseCamera(width, height, near_plane, far_plane, fov)
@@ -232,7 +231,7 @@ class Generator3D(object):
                         # if touch successful, cat the local feature to the query points
                         if touch_success[0, t_idx]:
                             depth = pred_d_detach[0, t_idx].reshape(h, w)
-                            depth = depth*0.005 + 0.017
+                            depth = depth*0.005 + 0.019
                             depth = depths.squeeze().cpu().numpy()[t_idx].reshape(h, w)
                                     
                             depth_diff = depth.reshape(w * h) - depth_origin
@@ -327,7 +326,7 @@ class Generator3D(object):
             
         #     width = 240
         #     height = 320
-        #     near_plane = 0.017
+        #     near_plane = 0.019
         #     far_plane = 0.022
         #     fov = 60
         #     cam_unity = RFUniverseCamera(width, height, near_plane, far_plane, fov)
@@ -335,7 +334,7 @@ class Generator3D(object):
         #     pc_world_l = np.zeros((pred_depth.shape[0], 76800, 3))
         #     for t_idx in range(pred_depth.shape[0]):
         #         depth = pred_depth[t_idx].reshape(320, 240)
-        #         depth = depth*0.005 + 0.017
+        #         depth = depth*0.005 + 0.019
         #         pc_depth, pc_depth_all = cam_unity.depth_2_camera_pointcloud(depth)
                 
         #         # pc_world = pc_cam_to_world(pc_depth, rot=cam_r[t_idx]+[-90, 0, 90], trans=cam_p[t_idx])
@@ -357,7 +356,7 @@ class Generator3D(object):
             
             width = 240
             height = 320
-            near_plane = 0.017
+            near_plane = 0.019
             far_plane = 0.022
             fov = 60
             cam_unity = RFUniverseCamera(width, height, near_plane, far_plane, fov)
@@ -371,7 +370,7 @@ class Generator3D(object):
                
                 for t_idx in range(pred_depth.shape[1]):
                     depth = pred_depth[batch, t_idx].reshape(320, 240)
-                    depth = depth*0.005 + 0.017
+                    depth = depth*0.005 + 0.019
                     pc_depth, pc_depth_all = cam_unity.depth_2_camera_pointcloud(depth)
                     
                     # pc_world = pc_cam_to_world(pc_depth, rot=cam_r[t_idx]+[-90, 0, 90], trans=cam_p[t_idx])
