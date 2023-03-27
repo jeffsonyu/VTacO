@@ -30,7 +30,7 @@ def compute_iou(occ1, occ2, threshold):
     # occ1 = (occ1 >= threshold)
     # occ2 = (occ2 >= threshold)
     
-    threshold = 0.47
+    threshold = np.mean(occ2)
     occ1 = (occ1 >= threshold)
     occ2 = (occ2 >= threshold)
 
