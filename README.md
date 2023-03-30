@@ -1,5 +1,5 @@
 # Visual-Tactile Sensing for In-Hand Object Reconstruction
-[**Paper**] | [**Project Page**](https://sites.google.com/view/vtaco) <br>
+[**Paper**](https://arxiv.org/abs/2303.14498) | [**Project Page**](https://sites.google.com/view/vtaco) <br>
 
 <div style="text-align: center">
 <img src="media/VTacO.png" width="1000"/>
