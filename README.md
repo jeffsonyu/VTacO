@@ -33,31 +33,7 @@ python setup.py build_ext --inplace
 
 ## Dataset
 We are uploading the dataset, which will be available on https://huggingface.co/datasets/robotflow/vtaco/  
-You can follow the instructions download the dataset for training and testing dataset for VTacO and VTacOH.
-<!-- For downloading the training and testing dataset for VTacO and VTacOH, you can simply run the following command to download our preprocessed dataset:
-
-```
-bash scripts/download_data.sh
-```
-
-This script should download and unpack the data automatically into the `data/` folder, which should look like:
-```
-VTacO
-├── data
-│   ├── VTacO_AKB_class
-    │   │   │── 001
-    │   │   │   |── $class_name
-    │   │   │   |── metadata.yaml
-    │   │   │── 002
-    │   │   │── ...
-    │   │   │── 007
-    ├── VTacO_YCB
-    │   │   │── 003
-    │   │   │── metadata.yaml
-    ├── VTacO_mesh
-    │   │   │── mesh_obj
-    │   │   │── depth_origin.txt
-``` -->
+You can follow the instructions to download the dataset for training and testing dataset for VTacO and VTacOH.
 
 ## VT-Sim
 We will soon release the Simulation environment VT-Sim!
