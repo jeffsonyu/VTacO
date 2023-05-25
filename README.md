@@ -11,6 +11,19 @@ This repository contains the implementation of the paper:
 Wenqiang Xu*, Zhenjun Yu*, Han Xue, Ruolin Ye, Siqiong Yao, Cewu Lu (* = Equal contribution)  
 **CVPR 2023**  
 
+If you find our code or paper useful, please consider citing
+```bibtex
+@InProceedings{Xu_2023_CVPR,
+    author    = {Xu, Wenqiang and Yu, Zhenjun and Xue, Han and Ye, Ruolin and Yao, Siqiong and Lu, Cewu},
+    title     = {Visual-Tactile Sensing for In-Hand Object Reconstruction},
+    booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+    month     = {June},
+    year      = {2023},
+    pages     = {8803-8812}
+}
+
+```
+
 ## Installation
 First you have to make sure that you have all dependencies in place.
 The simplest way to do so, is to use [anaconda](https://www.anaconda.com/). 
