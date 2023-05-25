@@ -13,13 +13,12 @@ Wenqiang Xu*, Zhenjun Yu*, Han Xue, Ruolin Ye, Siqiong Yao, Cewu Lu (* = Equal c
 
 If you find our code or paper useful, please consider citing
 ```bibtex
-@InProceedings{Xu_2023_CVPR,
-    author    = {Xu, Wenqiang and Yu, Zhenjun and Xue, Han and Ye, Ruolin and Yao, Siqiong and Lu, Cewu},
-    title     = {Visual-Tactile Sensing for In-Hand Object Reconstruction},
-    booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
-    month     = {June},
-    year      = {2023},
-    pages     = {8803-8812}
+@inproceedings{xu2023visual,
+  title={Visual-Tactile Sensing for In-Hand Object Reconstruction},
+  author={Xu, Wenqiang and Yu, Zhenjun and Xue, Han and Ye, Ruolin and Yao, Siqiong and Lu, Cewu},
+  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  pages={8803--8812},
+  year={2023}
 }
 
 ```
