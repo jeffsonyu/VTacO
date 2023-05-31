@@ -1,4 +1,4 @@
-name: conv_onet
+name: vtaco
 channels:
   - conda-forge
   - pytorch
