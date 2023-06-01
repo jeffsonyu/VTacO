@@ -24,6 +24,7 @@ If you find our code or paper useful, please consider citing
 ```
 
 ## Installation
+This code is only tested on Ubuntu, we will soon test it on Windows system. 
 First you have to make sure that you have all dependencies in place.
 The simplest way to do so, is to use [anaconda](https://www.anaconda.com/). 
 
@@ -33,6 +34,10 @@ conda env create -f environment.yaml
 conda activate vtaco
 ```
 
+**Note**: You might need to install **torch-scatter** mannually following [the official instruction](https://github.com/rusty1s/pytorch_scatter#pytorch-140):
+```
+pip install torch-scatter==2.0.4 -f https://pytorch-geometric.com/whl/torch-1.4.0+cu101.html
+```
 
 Next, compile the extension modules.
 You can do this via
@@ -40,10 +45,6 @@ You can do this via
 python setup.py build_ext --inplace
 ```
 
-**Note**: This code is only tested on Ubuntu, we will soon test it on Windows system. You might need to install **torch-scatter** mannually following [the official instruction](https://github.com/rusty1s/pytorch_scatter#pytorch-140):
-```
-pip install torch-scatter==2.0.4 -f https://pytorch-geometric.com/whl/torch-1.4.0+cu101.html
-```
 
 ## Dataset
 We are uploading the dataset, which will be available on https://huggingface.co/datasets/robotflow/vtaco/  
