@@ -32,15 +32,17 @@ You can create an anaconda environment called `vtaco` using
 conda env create -f environment.yaml
 conda activate vtaco
 ```
-**Note**: you might need to install **torch-scatter** mannually following [the official instruction](https://github.com/rusty1s/pytorch_scatter#pytorch-140):
-```
-pip install torch-scatter==2.0.4 -f https://pytorch-geometric.com/whl/torch-1.4.0+cu101.html
-```
+
 
 Next, compile the extension modules.
 You can do this via
 ```
 python setup.py build_ext --inplace
+```
+
+**Note**: This code is only tested on Ubuntu, we will soon test it on Windows system. You might need to install **torch-scatter** mannually following [the official instruction](https://github.com/rusty1s/pytorch_scatter#pytorch-140):
+```
+pip install torch-scatter==2.0.4 -f https://pytorch-geometric.com/whl/torch-1.4.0+cu101.html
 ```
 
 ## Dataset
