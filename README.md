@@ -25,6 +25,7 @@ If you find our code or paper useful, please consider citing
 
 ## Installation
 This code is only tested on Ubuntu, we will soon test it on Windows system. 
+
 First you have to make sure that you have all dependencies in place.
 The simplest way to do so, is to use [anaconda](https://www.anaconda.com/). 
 
