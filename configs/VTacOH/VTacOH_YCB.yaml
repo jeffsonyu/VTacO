@@ -77,8 +77,8 @@ training:
   model_selection_metric: iou
   model_selection_mode: maximize
   print_every: 100
-  visualize_every: 1
-  validate_every: 1
+  visualize_every: 10000
+  validate_every: 1000
   checkpoint_every: 3000
   backup_every: 10000
   n_workers: 8
