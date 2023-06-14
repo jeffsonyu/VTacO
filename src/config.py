@@ -5,7 +5,7 @@ from src import conv_onet
 
 
 method_dict = {
-    'conv_onet': conv_onet
+    'vtaco': conv_onet
 }
 
 
