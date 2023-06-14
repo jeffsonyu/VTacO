@@ -23,29 +23,61 @@ If you find our code or paper useful, please consider citing
 
 ```
 
-## Installation
-This code is only tested on Ubuntu, we will soon test it on Windows system. 
+## Get-Started
 
-First you have to make sure that you have all dependencies in place.
-The simplest way to do so, is to use [anaconda](https://www.anaconda.com/). 
+The code is only tested on Ubuntu, we will soon test it on Windows system. 
 
-You can create an anaconda environment called `vtaco` using
-```
-conda env create -f environment.yaml
+## With conda and pip
+
+Install [anaconda](https://www.anaconda.com/) or [miniconda](https://docs.conda.io/en/latest/miniconda.html). Supposing that the name `vtaco` is used for conda environment:
+
+```shell
+conda create -y -n vtaco python=3.6.7
 conda activate vtaco
 ```
 
-**Note**: You might need to install **torch-scatter** mannually following [the official instruction](https://github.com/rusty1s/pytorch_scatter#pytorch-140):
-```
-pip install torch-scatter==2.0.4 -f https://pytorch-geometric.com/whl/torch-1.4.0+cu101.html
+Then, install dependencies with `pip install`
+
+```shell
+pip install -r requirements.txt
 ```
 
 Next, compile the extension modules.
 You can do this via
-```
+
+```shell
 python setup.py build_ext --inplace
 ```
 
+## With Docker
+
+Install Docker under the [instructions](https://docs.docker.com/get-started/). Supposing hat the tag `vtaco-train` is used for docker image:
+
+```shell
+docker build -t vtaco-train -f ./manifests/Dockerfile .
+```
+
+To start a develop container, run
+
+```shell
+docker run --ipc=host --rm -it -p 8888:8888 vtaco-train
+```
+
+This will launch a jupyterlab server inside the container. The server can be accessed via port `8888`.
+
+If the Docker installation is configured with Nvidia's GPU support, an additional `--gpus all` flag can be passed
+
+```shell
+docker run --ipc=host --gpus all --rm -it -p 8888:8888 vtaco-train
+```
+
+To mount the dataset, add an additional `--volume` mapping. 
+
+```shell
+docker run --ipc=host --gpus all --rm -it -p 8888:8888 --volume <path/to/dataset>:/opt/vtaco/data vtaco-train
+```
+
+**Note**: The `<path/to/dataset>` should be replaced by actual path on the host system.
 
 ## Dataset
 We are uploading the dataset, which will be available on https://huggingface.co/datasets/robotflow/vtaco/  
@@ -60,11 +92,13 @@ To train the Depth Estimator $U_I(\cdot)$ and the sensor pose estimator, we prov
 python train_depth.py configs/tactile/tactile_test.yaml
 ```
 
-With the pretrained model of $U_I(\cdot)$ and the sensor pose estimator, examples for training VTacO or VTacOH are as follows: 
-```
+With the pretrained model of $U_I(\cdot)$ and the sensor pose estimator, examples for training VTacO or VTacOH are as follows:
+
+```shell
 python train.py configs/VTacO/VTacO_YCB.yaml
 python train.py configs/VTacOH/VTacOH_YCB.yaml
 ```
-**Note**: you might need to change *path* in *data*, and *model_file* in *encoder_t2d_kwargs* of the config file, to your data path and pretrained model path.  
+
+**Note**: you might need to change *path* in *data*, and *model_file* in *encoder_t2d_kwargs* of the config file, to your data path and pretrained model path. This path is `out/tactile/test/model_best.pt` by default.
 
 All the results will be saved in `out/` folder, including checkpoints, visualization results and logs for tensorboard.
