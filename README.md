@@ -84,7 +84,7 @@ We are uploading the dataset, which will be available on https://huggingface.co/
 You can follow the instructions to download the dataset for training and testing dataset for VTacO and VTacOH.
 
 ## VT-Sim
-We will soon release the Simulation environment VT-Sim!
+The VT-Sim has been released [here]([https://docs.docker.com/get-started/](https://github.com/jeffsonyu/VT-Sim))
 
 ## Training
 To train the Depth Estimator $U_I(\cdot)$ and the sensor pose estimator, we provide a config file `configs/tactile/tactile_test.yaml`, you can run the following command to train from scratch:
