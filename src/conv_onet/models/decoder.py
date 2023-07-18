@@ -94,8 +94,8 @@ class LocalDecoder(nn.Module):
                 net = net + self.fc_c[i](c)
             
             net = self.blocks[i](net)
+            
         # N * 32
-        # print(net.size())
         out = self.fc_out(self.actvn(net))
         
         out = out.squeeze(-1)

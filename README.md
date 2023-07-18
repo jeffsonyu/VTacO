@@ -32,7 +32,7 @@ The code is only tested on Ubuntu, we will soon test it on Windows system.
 Install [anaconda](https://www.anaconda.com/) or [miniconda](https://docs.conda.io/en/latest/miniconda.html). Supposing that the name `vtaco` is used for conda environment:
 
 ```shell
-conda create -y -n vtaco python=3.6.7
+conda create -y -n vtaco python=3.8
 conda activate vtaco
 ```
 
@@ -40,13 +40,6 @@ Then, install dependencies with `pip install`
 
 ```shell
 pip install -r requirements.txt
-```
-
-Next, compile the extension modules.
-You can do this via
-
-```shell
-python setup.py build_ext --inplace
 ```
 
 ## With Docker

@@ -1,12 +1,8 @@
-
 import numpy as np
 import trimesh
 from scipy import ndimage
 from skimage.measure import block_reduce
-from src.utils.libvoxelize.voxelize import voxelize_mesh_
-from src.utils.libmesh import check_mesh_contains
 from src.common import make_3d_grid
-
 
 class VoxelGrid:
     def __init__(self, data, loc=(0., 0., 0.), scale=1):
@@ -220,33 +216,7 @@ def voxelize_fill(mesh, resolution):
     return occ
 
 
-def voxelize_surface(mesh, resolution):
-    vertices = mesh.vertices
-    faces = mesh.faces
 
-    vertices = (vertices + 0.5) * resolution
-
-    face_loc = vertices[faces]
-    occ = np.full((resolution,) * 3, 0, dtype=np.int32)
-    face_loc = face_loc.astype(np.float32)
-
-    voxelize_mesh_(occ, face_loc)
-    occ = (occ != 0)
-
-    return occ
-
-
-def voxelize_interior(mesh, resolution):
-    shape = (resolution,) * 3
-    bb_min = (0.5,) * 3
-    bb_max = (resolution - 0.5,) * 3
-    # Create points. Add noise to break symmetry
-    points = make_3d_grid(bb_min, bb_max, shape=shape).numpy()
-    points = points + 0.1 * (np.random.rand(*points.shape) - 0.5)
-    points = (points / resolution - 0.5)
-    occ = check_mesh_contains(mesh, points)
-    occ = occ.reshape(shape)
-    return occ
 
 
 def check_voxel_occupied(occupancy_grid):

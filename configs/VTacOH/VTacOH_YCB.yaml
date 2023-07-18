@@ -69,7 +69,7 @@ model:
   c_dim: 32
 
 training:
-  out_dir: out/VTacOH/AKB_001
+  out_dir: out/VTacOH/YCB
   opt: Adam
   lr: 0.0001
   gpu: 0

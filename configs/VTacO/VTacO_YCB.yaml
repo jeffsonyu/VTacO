@@ -63,7 +63,7 @@ model:
   encoder_t2d: True
   encoder_t2d_kwargs:
     pretrained: True
-    model_file: ../../tactile/test/model_best.pt # NOTE: replace this with actual path
+    model_file: ../../tactile/test/model.pt # NOTE: replace this with actual path
 
     encoder_img: UNet
     encoder_img_kwargs:
@@ -96,11 +96,11 @@ model:
   c_dim: 32
 
 training:
-  out_dir: out/VTacO/AKB_001
+  out_dir: out/VTacO/YCB
   opt: Adam
   lr: 0.0001
-  gpu: 0
-  batch_size: 4
+  gpu: 1
+  batch_size: 3
   model_selection_metric: iou
   model_selection_mode: maximize
   print_every: 100

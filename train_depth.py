@@ -36,7 +36,6 @@ t0 = time.time()
 out_dir = cfg['training']['out_dir']
 batch_size = cfg['training']['batch_size']
 backup_every = cfg['training']['backup_every']
-# vis_n_outputs = cfg['generation']['vis_n_outputs']
 exit_after = args.exit_after
 
 model_selection_metric = cfg['training']['model_selection_metric']
@@ -96,7 +95,6 @@ for i in range(len(vis_loader)):
             category_name = category_id
 
         c_it = model_counter[category_id]
-        # if c_it < vis_n_outputs:
         data_vis_list.append({'category': category_name, 'it': c_it, 'data': data_vis, 'name': vis_name})
 
         model_counter[category_id] += 1
@@ -112,7 +110,6 @@ for i in range(len(vis_loader)):
                 category_name = category_id
 
             c_it = model_counter[category_id]
-            # if c_it < vis_n_outputs:
             data_vis_list.append({'category': category_name, 'it': c_it, 'data': data_vis, 'name': vis_name})
 
             model_counter[category_id] += 1
@@ -197,7 +194,6 @@ while True:
             loss, loss_depth, loss_digit = trainer.train_step(batch, vf_dict)
         
         logger.add_scalar('train/loss', loss, it)
-        # logger.add_scalar('train/loss_pc', loss_pc, it)
 
         # Print output
         if print_every > 0 and (it % print_every) == 0:
@@ -256,29 +252,11 @@ while True:
             print('Visualizing...')
             if cfg['model']['train_tactile'] == False:
                 for data_vis in tqdm(data_vis_list):
-                # if cfg['generation']['sliding_window']:
-                #     out = generator.generate_mesh_sliding(data_vis['data'])    
-                # else:
-                #     out = generator.generate_mesh(data_vis['data'])
-                # # Get statistics
-                # try:
-                #     mesh, stats_dict = out
-                # except TypeError:
-                #     mesh, stats_dict = out, {}
-                
-                
                     mesh_hand = generator.generate_hand_mesh(data_vis['data'])
                     mesh_obj = generator.generate_obj_mesh_wnf(data_vis['data'])
 
-                    # mesh.export(os.path.join(out_dir, 'vis', '{}_{}_{}.off'.format(it, data_vis['category'], data_vis['it'])))
                     mesh_hand.export(os.path.join(out_dir, 'vis', '{}_{}_{}_hand.off'.format(it, data_vis['category'], data_vis['it']+1)))
                     mesh_obj.export(os.path.join(out_dir, 'vis', '{}_{}_{}_obj.off'.format(it, data_vis['category'], data_vis['it']+1)))
-                # else:
-                #     pred_pc_l = generator.generate_tactile_pc(data_vis['data'])
-                    
-                #     for idx_pc, pred_pc in enumerate(pred_pc_l):
-                #         save_path_pc = os.path.join(out_dir, 'vis', '{}_{}_{}.ply'.format(it, data_vis['name'], idx_pc+1))
-                #         write_ply(save_path_pc, pred_pc)
             
             else:     
                 for batch in tqdm(vis_loader_test):
@@ -289,9 +267,6 @@ while True:
                         
             print("Finish visualizing!")
                 
-
-        
-        
 
         # Exit if necessary
         if exit_after > 0 and (time.time() - t0) >= exit_after:

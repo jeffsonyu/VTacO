@@ -35,7 +35,7 @@ print("Training on gpu %d" % cfg['training']['gpu'])
 out_dir = cfg['training']['out_dir']
 batch_size = cfg['training']['batch_size']
 backup_every = cfg['training']['backup_every']
-# vis_n_outputs = cfg['generation']['vis_n_outputs']
+
 exit_after = args.exit_after
 if exit_after > 0:
     print("exit_after: %ds" % exit_after)
@@ -57,7 +57,6 @@ shutil.copyfile(args.config, os.path.join(out_dir, 'config.yaml'))
 # Dataset
 train_dataset = config.get_dataset('train', cfg)
 train_name_list = train_dataset.models
-# print(train_name_list)
 val_dataset = config.get_dataset('val', cfg, return_idx=True)
 vis_name_list = val_dataset.models
 
@@ -134,7 +133,7 @@ trainer = config.get_trainer(model, optimizer, cfg, device=device)
 checkpoint_io = CheckpointIO(out_dir, model=model, optimizer=optimizer)
 try:
     load_dict = checkpoint_io.load(cfg['test']['model_file'], device=device)
-except FileExistsError:
+except FileNotFoundError:
     load_dict = dict()
 
 epoch_it = load_dict.get('epoch_it', 0)
@@ -173,7 +172,6 @@ for model_name in train_name_list:
         vf_obj['v'] = v.astype(np.float32)
         vf_obj['f'] = f
         vf_dict[obj_name] = vf_obj
-        # print(obj_name, v.shape, f.shape)
 
 
 # Set t0
@@ -194,7 +192,6 @@ while True:
         
         logger.add_scalar('train/loss', loss, it)
         logger.add_scalar('train/loss_mano', loss_mano, it)
-        # logger.add_scalar('train/loss_pc', loss_pc, it)
 
         # Print output
         if print_every > 0 and (it % print_every) == 0:
@@ -244,23 +241,14 @@ while True:
             cd_total = []
             print('Visualizing at iteration: %d' % it)
             for data_vis in tqdm(data_vis_list):
-                # if cfg['generation']['sliding_window']:
-                #     out = generator.generate_mesh_sliding(data_vis['data'])    
-                # else:
-                #     out = generator.generate_mesh(data_vis['data'])
-                # # Get statistics
-                # try:
-                #     mesh, stats_dict = out
-                # except TypeError:
-                #     mesh, stats_dict = out, {}
                 
                 mesh_hand = generator.generate_hand_mesh(data_vis['data'])
                 mesh_obj, emd, cd = generator.generate_obj_mesh_wnf(data_vis['data'])
                 emd_total.append(emd)
                 cd_total.append(cd)
-                # mesh.export(os.path.join(out_dir, 'vis', '{}_{}_{}.off'.format(it, data_vis['category'], data_vis['it'])))
-                # mesh_hand.export(os.path.join(out_dir, 'vis', '{}_{}_hand.off'.format(it, data_vis['name'])))
-                # mesh_obj.export(os.path.join(out_dir, 'vis', '{}_{}_obj.off'.format(it, data_vis['name'])))
+
+                mesh_hand.export(os.path.join(out_dir, 'vis', '{}_{}_hand.off'.format(it, data_vis['name'])))
+                mesh_obj.export(os.path.join(out_dir, 'vis', '{}_{}_obj.off'.format(it, data_vis['name'])))
 
             print("Finish visualizing!")
             
