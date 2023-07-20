@@ -135,7 +135,7 @@ trainer = config.get_trainer(model, optimizer, cfg, device=device)
 checkpoint_io = CheckpointIO(out_dir, model=model, optimizer=optimizer)
 try:
     load_dict = checkpoint_io.load(cfg['test']['model_file'], device=device)
-except FileExistsError:
+except FileNotFoundError:
     load_dict = dict()
 
 epoch_it = load_dict.get('epoch_it', 0)
