@@ -62,7 +62,7 @@ class PatchPointsField(Field):
             num = np.random.randint(self.multi_files)
             file_path = os.path.join(model_path, self.file_name, '%s_%02d.npz' % (self.file_name, num))
 
-        points_dict = np.load(file_path)
+        points_dict = np.load(file_path, allow_pickle=True)
         points = points_dict['points']
         # Break symmetry if given in float16:
         if points.dtype == np.float16:
@@ -130,7 +130,7 @@ class PointsField(Field):
             num = np.random.randint(self.multi_files)
             file_path = os.path.join(model_path, self.file_name, '%s_%02d.npz' % (self.file_name, num))
 
-        points_dict = np.load(file_path)
+        points_dict = np.load(file_path, allow_pickle=True)
         
         points = points_dict['points']
         # Break symmetry if given in float16:
@@ -248,7 +248,7 @@ class PatchPointCloudField(Field):
             num = np.random.randint(self.multi_files)
             file_path = os.path.join(model_path, self.file_name, '%s_%02d.npz' % (self.file_name, num))
 
-        pointcloud_dict = np.load(file_path)
+        pointcloud_dict = np.load(file_path, allow_pickle=True)
 
         points = pointcloud_dict['points'].astype(np.float32)
         normals = pointcloud_dict['normals'].astype(np.float32)
@@ -323,7 +323,7 @@ class PointCloudField(Field):
             num = np.random.randint(self.multi_files)
             file_path = os.path.join(model_path, self.file_name, '%s_%02d.npz' % (self.file_name, num))
 
-        pointcloud_dict = np.load(file_path)
+        pointcloud_dict = np.load(file_path, allow_pickle=True)
 
         points = pointcloud_dict['points'].astype(np.float32)
         normals = pointcloud_dict['normals'].astype(np.float32)
@@ -393,7 +393,7 @@ class PartialPointCloudField(Field):
             num = np.random.randint(self.multi_files)
             file_path = os.path.join(model_path, self.file_name, '%s_%02d.npz' % (self.file_name, num))
 
-        pointcloud_dict = np.load(file_path)
+        pointcloud_dict = np.load(file_path, allow_pickle=True)
 
         points = pointcloud_dict['points'].astype(np.float32)
         normals = pointcloud_dict['normals'].astype(np.float32)
