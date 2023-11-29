@@ -1,4 +1,4 @@
-method: conv_onet
+method: vtaco
 data:
   dataset: Shapes3D
   path: data/ShapeNet
