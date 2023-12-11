@@ -4,6 +4,7 @@ build
 *.o
 src/utils/libmcubes/mcubes.cpp
 src/utils/libsimplify/simplify_mesh.cpp
+src/TransformerFusion.py
 
 # Python Cache
 *.pyc
