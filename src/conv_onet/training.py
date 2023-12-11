@@ -343,9 +343,9 @@ class Trainer(BaseTrainer):
                                     pc_world_all = pc_cam_to_world(pc_depth_new, rot=cam_rot_d[batch, t_idx]+[-np.pi/2, 0, np.pi/2], trans=cam_pos_d[batch, t_idx])
                                     pc_world_l.append(norm_pc_1(pc_world_all, pc_ply.squeeze().detach().cpu().numpy()))
                                     
-                                    c_img_all[batch, idx_f_img:pc_depth_new.shape[0], :] = c_img[batch, t_idx, :]
+                                    c_img_all[batch, idx_f_img:idx_f_img + pc_depth_new.shape[0], :] = c_img[batch, t_idx, :]
                                     
-                                    idx_f_img = pc_depth_new.shape[0]
+                                    idx_f_img = pc_depth_new.shape[0] + idx_f_img
                                     # np.savetxt("/newssd1/home/zhenjun/conv_pcnet/out/inference/akb_grid_img_d_7/test_{}.txt".format(t_idx), pc_world_all)
                             
                             pc_world_final = []
@@ -838,8 +838,8 @@ class Trainer(BaseTrainer):
                     pc_world_all = pc_cam_to_world(pc_depth_new, rot=cam_rot_d[batch, t_idx]+[-np.pi/2, 0, np.pi/2], trans=cam_pos_d[batch, t_idx])
                     pc_world_l.append(norm_pc_1(pc_world_all, pc_ply[batch]))
                     
-                    c_img_all[batch, idx_f_img:pc_depth_new.shape[0], :] = c_img[batch, t_idx, :]
-                    idx_f_img = pc_depth_new.shape[0]
+                    c_img_all[batch, idx_f_img:idx_f_img + pc_depth_new.shape[0], :] = c_img[batch, t_idx, :]
+                    idx_f_img = pc_depth_new.shape[0] + idx_f_img
                     
             
             pc_world_final = []
