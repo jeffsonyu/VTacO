@@ -3,7 +3,7 @@ from src.encoder import (
 )
 
 from src.layers import (
-    Resnet18, Resnet34, Resnet50, UNet
+    Resnet18, Resnet34, Resnet50, UNet, MLP_glove
 )
 
 from src.TransformerFusion import TransformerFusion
@@ -16,5 +16,6 @@ encoder_dict = {
     'Resnet18': Resnet18,
     'Resnet34': Resnet34,
     'Resnet50': Resnet50,
+    'mlp': MLP_glove,
     'UNet': UNet
 }

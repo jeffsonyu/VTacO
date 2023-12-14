@@ -337,7 +337,21 @@ if __name__ == "__main__":
     net = TransformerFusion(with_pos_embed=False)
     global_f = torch.randn(6, 2048, 32)
     local_f = torch.randn(6, 2048, 32)
-    pc = torch.randn(6, 2048, 3)
+    pc1 = torch.randn(6, 2048, 3)
+    pc2 = torch.randn(6, 2048, 3)
+    
+    global_f = torch.randn(6, 2048, 32)
+    local_f = torch.randn(6, 38, 32)
+    pc1 = torch.randn(6, 2048, 3)
+    pc2 = torch.randn(6, 38, 3)
 
-    out = net(local_f, 1, global_f, 1)
+    out = net(global_f, pc1, local_f, pc2)
     print(out.size())
+    
+    
+    
+    x = torch.randn(6, 100000, 3)
+    random_indice = np.random.randint(0, 100000, size=(6, 2048))
+    print(random_indice.shape)
+    x = x[np.arange(6)[:, None], random_indice]
+    print(x.size())

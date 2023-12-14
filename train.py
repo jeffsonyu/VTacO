@@ -84,6 +84,9 @@ iterator = iter(vis_loader)
 for i in range(len(vis_loader)):
     
     data_vis = next(iterator)
+    if cfg['data']['dataset'] == "Sequence":
+        data_vis = data_vis[3]
+        
     vis_name = vis_name_list[i]['model']
 
     if cfg['generation']['vis_all']:

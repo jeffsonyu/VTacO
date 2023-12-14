@@ -49,6 +49,9 @@ class Trainer(BaseTrainer):
         self.train_tactile = train_tactile
         self.encode_t2d = encode_t2d
         self.pretrained_t2d = pretrained_t2d
+        
+        self.transformer = True
+        self.sequence = True
 
         if vis_dir is not None and not os.path.exists(vis_dir):
             os.makedirs(vis_dir)
@@ -62,19 +65,20 @@ class Trainer(BaseTrainer):
         self.model.train()
         self.optimizer.zero_grad()
         
+        
+        if self.transformer and not self.sequence:
+            loss, loss_mano, loss_pc = self.compute_loss_transformer(data, vf_dict)
+            return loss.item(), loss_mano.item(), loss_pc.item()
+        elif self.transformer and self.sequence:
+            loss, loss_mano, loss_pc = self.compute_loss_transformer_sequence(data, vf_dict)
+            return loss.item(), loss_mano.item(), loss_pc.item()
+
         if not self.train_tactile:
             if not self.encode_t2d:
                 if self.with_img:
                     loss, loss_mano, loss_pc = self.compute_loss_img(data)
                 else:
                     loss, loss_mano, loss_pc = self.compute_loss(data)
-                
-                if self.with_contact:
-                    loss, loss_mano, loss_pc, loss_contact = self.compute_loss_contact(data)
-                    loss.backward()
-                    self.optimizer.step()
-                    
-                    return loss.item(), loss_mano.item(), loss_pc.item(), loss_contact.item()
                     
                 loss.backward()
                 self.optimizer.step()
@@ -156,7 +160,50 @@ class Trainer(BaseTrainer):
             v, f = vf_dict[data_name_b]['v'], vf_dict[data_name_b]['f']
             vertices_l.append(v)
             faces_l.append(f)
+        
+        if self.transformer and not self.sequence:
+            device = self.device
+            p = data.get('points')
+            inputs = data.get('inputs', torch.empty(p.size(0), 0)).to(device)
+            
+            occ, p, cam_pos, c, c_img = self.get_data_feature(data)
+            
+            kwargs = {}
+            logits = self.model.decode_img(p, cam_pos, c, c_img, **kwargs).logits
+            iou = compute_iou(occ, logits.cpu().numpy(), threshold)
+            eval_dict['iou'] = iou[0]
+            
+        elif self.transformer and self.sequence:
+            device = self.device
+            p = data[2].get('points')
+            inputs = data[2].get('inputs', torch.empty(p.size(0), 0)).to(device)
+            
+            _, p_front_global_2, p_local_front_2, c_front_2, c_img_front_2 = self.get_data_feature(data[-1])
+            _, p_front_global_1, p_local_front_1, c_front_1, c_img_front_1 = self.get_data_feature(data[-2])
+            occ, p, p_local, c, c_img = self.get_data_feature(data[2])
+            _, p_back_global_1, p_local_back_1, c_back_1, c_img_back_1 = self.get_data_feature(data[1])
+            _, p_back_global_2, p_local_back_2, c_back_2, c_img_back_2 = self.get_data_feature(data[0])
 
+            p_front_global = p_front_global_1
+            p_back_global = p_back_global_1
+            
+            c_front_1_fuse = self.model.decoder.fuse_pointcloud(p_front_global_1, p_local_front_1, c_front_1, c_img_front_1)
+            c_front_2_fuse = self.model.decoder.fuse_pointcloud(p_front_global_2, p_local_front_2, c_front_2, c_img_front_2)
+            c_front_fuse = self.model.decoder.fuse_f(p_front_global_1, p_front_global_2, c_front_1_fuse, c_front_2_fuse)
+            
+            c_back_1_fuse = self.model.decoder.fuse_pointcloud(p_back_global_1, p_local_back_1, c_back_1, c_img_back_1)
+            c_back_2_fuse = self.model.decoder.fuse_pointcloud(p_back_global_2, p_local_back_2, c_back_2, c_img_back_2)
+            c_back_fuse = self.model.decoder.fuse_f(p_back_global_1, p_back_global_2, c_back_1_fuse, c_back_2_fuse)
+
+            c_fuse = self.model.decoder.fuse_f(p_front_global, p_back_global, c_front_fuse, c_back_fuse)
+            c_fuse_now = self.model.decoder.fuse_pointcloud(p, p_local, c, c_img)
+            
+            kwargs = {}
+            logits = self.model.decoder.forward_fuse(p, p_front_global, c_fuse_now, c_fuse, **kwargs)
+            logits = dist.Bernoulli(logits=logits).logits
+            iou = compute_iou(occ, logits.cpu().numpy(), threshold)
+            eval_dict['iou'] = iou[0]
+            
         if not self.train_tactile:
             with torch.no_grad():
                 
@@ -625,6 +672,111 @@ class Trainer(BaseTrainer):
 
         return loss, loss_mano, loss_pc
 
+
+    def get_data_feature(self, data):
+        device = self.device
+        p = data.get('points')
+        occ = data.get('points.occ')
+        # mano = data.get('points.mano').to(device)
+        # pc_hand = data.get('points.pc_hand').to(device)
+        
+        inputs = data.get('inputs', torch.empty(p.size(0), 0)).to(device)
+        # pc_ply = data.get('inputs.pc_ply').to(device)
+        imgs = data.get('inputs.img').to(device)
+        # touch_success = data.get('inputs.touch_success').to(device)
+        cam_pos = data.get('points.cam_pos').to(device).reshape(p.size(0), -1)
+        cam_rot = data.get('points.cam_rot').to(device).reshape(p.size(0), -1)
+        
+        B, N, D = p.size()
+        num_sample = self.num_sample
+        random_indice = np.random.randint(0, N, size=(B, num_sample))
+        p = p[np.arange(B)[:, None], random_indice]
+        
+        occ = occ[np.arange(B)[:, None], random_indice]
+
+        # if hand and object are separated
+        c = self.model.encode_inputs(inputs)
+
+        c_img = self.model.encode_img_inputs(imgs)
+        
+        return occ.to(device), p.to(device), cam_pos, c, c_img
+        
+    def compute_loss_transformer(self, data, vf_dict):
+        ''' Computes the loss with tactile signals.
+
+        Args:
+            data (dict): data dictionary
+        '''
+        device = self.device
+        p = data.get('points')
+        inputs = data.get('inputs', torch.empty(p.size(0), 0)).to(device)
+        mano = data.get('points.mano').to(device)
+        pc_hand = data.get('points.pc_hand').to(device)
+        
+        occ, p, cam_pos, c, c_img = self.get_data_feature(data)
+        c_hand = self.model.encode_hand_inputs(inputs)
+        
+        mano_param = c_hand['mano_param']
+        mano_pc = c_hand['mano_verts']
+        mano_joints = c_hand['mano_joints']
+        
+
+        kwargs = {}
+        logits = self.model.decode_img(p, cam_pos, c, c_img).logits
+    
+    
+        loss_l1 = F.l1_loss(logits, occ)
+        loss_mano = F.mse_loss(mano_param, mano)
+        loss_pc = F.mse_loss(mano_pc, pc_hand)
+        
+        loss = loss_l1 + loss_mano + loss_pc
+
+        return loss, loss_mano, loss_pc
+    
+    def compute_loss_transformer_sequence(self, data, vf_dict):
+        device = self.device
+        p = data[2].get('points')
+        mano = data[2].get('points.mano').to(device)
+        pc_hand = data[2].get('points.pc_hand').to(device)
+        inputs = data[2].get('inputs', torch.empty(p.size(0), 0)).to(device)
+        
+        _, p_front_global_2, p_local_front_2, c_front_2, c_img_front_2 = self.get_data_feature(data[-1])
+        _, p_front_global_1, p_local_front_1, c_front_1, c_img_front_1 = self.get_data_feature(data[-2])
+        occ, p, p_local, c, c_img = self.get_data_feature(data[2])
+        _, p_back_global_1, p_local_back_1, c_back_1, c_img_back_1 = self.get_data_feature(data[1])
+        _, p_back_global_2, p_local_back_2, c_back_2, c_img_back_2 = self.get_data_feature(data[0])
+
+        p_front_global = p_front_global_1
+        p_back_global = p_back_global_1
+        
+        c_front_1_fuse = self.model.decoder.fuse_pointcloud(p_front_global_1, p_local_front_1, c_front_1, c_img_front_1)
+        c_front_2_fuse = self.model.decoder.fuse_pointcloud(p_front_global_2, p_local_front_2, c_front_2, c_img_front_2)
+        c_front_fuse = self.model.decoder.fuse_f(p_front_global_1, p_front_global_2, c_front_1_fuse, c_front_2_fuse)
+        
+        c_back_1_fuse = self.model.decoder.fuse_pointcloud(p_back_global_1, p_local_back_1, c_back_1, c_img_back_1)
+        c_back_2_fuse = self.model.decoder.fuse_pointcloud(p_back_global_2, p_local_back_2, c_back_2, c_img_back_2)
+        c_back_fuse = self.model.decoder.fuse_f(p_back_global_1, p_back_global_2, c_back_1_fuse, c_back_2_fuse)
+
+        c_fuse = self.model.decoder.fuse_f(p_front_global, p_back_global, c_front_fuse, c_back_fuse)
+        c_fuse_now = self.model.decoder.fuse_pointcloud(p, p_local, c, c_img)
+        
+        c_hand = self.model.encode_hand_inputs(inputs)
+        mano_param = c_hand['mano_param']
+        mano_pc = c_hand['mano_verts']
+        
+        kwargs = {}
+        logits = self.model.decoder.forward_fuse(p, p_front_global, c_fuse_now, c_fuse)
+        logits = dist.Bernoulli(logits=logits).logits
+        
+        loss_l1 = F.l1_loss(logits, occ)
+        loss_mano = F.mse_loss(mano_param, mano)
+        loss_pc = F.mse_loss(mano_pc, pc_hand)
+        
+        loss = loss_l1 + loss_mano + loss_pc
+
+        return loss, loss_mano, loss_pc
+
+        
     def compute_loss_t2d(self, data, vf_dict):
         device = self.device
         p = data.get('points').to(device)
@@ -752,7 +904,8 @@ class Trainer(BaseTrainer):
             loss = loss + loss_depth + loss_digit
 
         return loss, loss_mano, loss_pc
-
+        
+        
     
     def compute_loss_t2d_img(self, data, vf_dict):
         device = self.device

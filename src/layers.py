@@ -319,6 +319,22 @@ class UpConv(nn.Module):
         return x
 
 
+class MLP_glove(nn.Module):
+    def  __init__(self, input_dim=12, output_dim=32):
+        super(MLP_glove, self).__init__()
+        self.fc1 = nn.Linear(input_dim, 128)
+        self.fc2 = nn.Linear(128, 64)
+        self.fc3 = nn.Linear(64, output_dim)
+        
+    def forward(self, x):
+        x = F.relu(self.fc1(x))
+        # x = F.dropout(x, p=0.5)
+        x = F.relu(self.fc2(x))
+        # x = F.dropout(x, p=0.5)
+        x = self.fc3(x)
+        
+        return x
+
 class UNet(nn.Module):
     """ `UNet` class is based on https://arxiv.org/abs/1505.04597
 

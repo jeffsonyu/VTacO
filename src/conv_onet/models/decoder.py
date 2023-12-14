@@ -233,8 +233,7 @@ class AttentionDecoder(nn.Module):
         c = F.grid_sample(c, vgrid, padding_mode='border', align_corners=True, mode=self.sample_mode).squeeze(-1).squeeze(-1)
         return c
 
-
-    def forward_img(self, p, c_plane, c_img, **kwargs):
+    def fuse_pointcloud(self, p, p_img, c_plane, c_img):
         if self.c_dim != 0:
             plane_type = list(c_plane.keys())
             c = 0
@@ -249,14 +248,35 @@ class AttentionDecoder(nn.Module):
             c = c.transpose(1, 2)
             
         p = p.float()
-        # p_in = torch.cat((p, c_img), 2)
-        # net = self.fc_p_img(p_in)
+        p_img = p_img.float()
+        
+        c = self.fuser(c, p, c_img, p_img)      # B * 2048 * 32
+        
+        return c
+    
+    def fuse_f(self, p1, p2, c1, c2):
+        c = self.fuser(c1, p1, c2, p2)
+        return c
+
+    def forward_img(self, p, p_img, c_plane, c_img, **kwargs):
+        if self.c_dim != 0:
+            plane_type = list(c_plane.keys())
+            c = 0
+            if 'grid' in plane_type:
+                c += self.sample_grid_feature(p, c_plane['grid'])
+            if 'xz' in plane_type:
+                c += self.sample_plane_feature(p, c_plane['xz'], plane='xz')
+            if 'xy' in plane_type:
+                c += self.sample_plane_feature(p, c_plane['xy'], plane='xy')
+            if 'yz' in plane_type:
+                c += self.sample_plane_feature(p, c_plane['yz'], plane='yz')
+            c = c.transpose(1, 2)
+            
+        p = p.float()
+        p_img = p_img.float()
+        c = self.fuser(c, p, c_img, p_img)      # B * 2048 * 32
         
         net = self.fc_p(p)
-        # c = c + c_img
-        # c = self.fuser(c_img, p, c, p)
-        c = self.fuser(c_img, 1, c, 1)
-        
         for i in range(self.n_blocks):
             if self.c_dim != 0:
                 net = net + self.fc_c[i](c)
@@ -268,6 +288,22 @@ class AttentionDecoder(nn.Module):
         
         out = out.squeeze(-1)
 
+        return out
+    
+    def forward_fuse(self, p1, p2, c1, c2):
+        c = self.fuser(c1, p1, c2, p2)
+        
+        net = self.fc_p(p1)
+        for i in range(self.n_blocks):
+            if self.c_dim != 0:
+                net = net + self.fc_c[i](c)
+            
+            net = self.blocks[i](net)
+        # N * 32
+        # print(net.size())
+        out = self.fc_out(self.actvn(net))
+        
+        out = out.squeeze(-1)
         return out
 
     def forward_contact(self, p, c_plane, **kwargs):
@@ -299,6 +335,7 @@ class AttentionDecoder(nn.Module):
         out_contact = out_contact.squeeze(-1)
 
         return out, out_contact
+    
 
     def forward(self, p, c_plane, **kwargs):
         if self.c_dim != 0:

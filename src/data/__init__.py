@@ -1,6 +1,6 @@
 
 from src.data.core import (
-    Shapes3dDataset, collate_remove_none, worker_init_fn
+    Shapes3dDataset, SequenceDataset, collate_remove_none, worker_init_fn
 )
 from src.data.fields import (
     IndexField, PointsField,
@@ -13,6 +13,7 @@ from src.data.transforms import (
 __all__ = [
     # Core
     Shapes3dDataset,
+    SequenceDataset,
     collate_remove_none,
     worker_init_fn,
     # Fields

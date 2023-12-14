@@ -160,6 +160,25 @@ def get_dataset(mode, cfg, return_idx=False):
             categories=categories,
             cfg = cfg
         )
+        
+    elif dataset_type == 'Sequence':
+        # Dataset fields
+        # Method specific fields (usually correspond to output)
+        fields = method_dict[method].config.get_data_fields(mode, cfg)
+        # Input fields
+        inputs_field = get_inputs_field(mode, cfg)
+        if inputs_field is not None:
+            fields['inputs'] = inputs_field
+
+        if return_idx:
+            fields['idx'] = data.IndexField()
+
+        dataset = data.SequenceDataset(
+            dataset_folder, fields,
+            split=split,
+            categories=categories,
+            cfg = cfg
+        )
     else:
         raise ValueError('Invalid dataset "%s"' % cfg['data']['dataset'])
  

@@ -160,7 +160,7 @@ class ConvolutionalOccupancyNetwork(nn.Module):
         p_r = dist.Bernoulli(logits=logits)
         return p_r
     
-    def decode_img(self, p, c, c_img=None, **kwargs):
+    def decode_img(self, p, p_img, c, c_img=None, **kwargs):
         ''' Returns occupancy probabilities for the sampled points.
 
         Args:
@@ -169,7 +169,7 @@ class ConvolutionalOccupancyNetwork(nn.Module):
             c_img (tensor): latent code from tactile signals
         '''
         
-        logits = self.decoder.forward_img(p, c, c_img, **kwargs)
+        logits = self.decoder.forward_img(p, p_img, c, c_img, **kwargs)
         p_r = dist.Bernoulli(logits=logits)
         return p_r
     

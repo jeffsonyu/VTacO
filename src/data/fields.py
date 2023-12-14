@@ -339,7 +339,7 @@ class PointCloudField(Field):
 
         data = {
             None: points,
-            'normals': normals,
+            # 'normals': normals,
             'pc_ply': pc_ply,
             'touch_success': touch_success,
             'img': images,
