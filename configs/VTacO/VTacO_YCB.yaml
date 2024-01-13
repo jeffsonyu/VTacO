@@ -85,7 +85,7 @@ model:
         start_flits: 32
       
       out_mano: True
-      out_dim: 30
+      out_dim: 6
       manolayer_kwargs: *manolayer_k
     
 
