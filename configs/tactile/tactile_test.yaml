@@ -31,7 +31,7 @@ model:
       merge_mode: concat
       start_filts: 32
     out_mano: True
-    out_dim: 30
+    out_dim: 6
     manolayer_kwargs:
       center_idx: 9
       flat_hand_mean: False
