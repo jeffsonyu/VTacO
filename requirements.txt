@@ -4,6 +4,7 @@ trimesh
 chumpy
 scipy
 scikit-image
+open3d
 matplotlib
 pandas
 pillow
